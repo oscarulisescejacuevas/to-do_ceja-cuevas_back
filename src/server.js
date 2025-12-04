@@ -10,10 +10,10 @@ import authRoutes from './routes/auth.routes.js';
 // Crear la aplicación express
 const app = express();
 
-// ✅ Configuración CORS
+// ✅Configuración CORS
 const FRONTEND_URLS = [
-  'http://localhost:5173', // desarrollo local
-  'https://todo-pwa-front-ftp.vercel.app' // producción en Vercel
+  'http://localhost:5173/', // desarrollo local
+  'https://to-do-ceja-cuevas-front.vercel.app' // producción en Vercel
 ];
 
 app.use(cors({
