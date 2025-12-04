@@ -13,7 +13,7 @@ const app = express();
 // ✅ Configuración CORS
 const FRONTEND_URLS = [
   'http://localhost:5173', // desarrollo local
-  'https://todo-pwa-front-ftp.vercel.app' // producción en Vercel
+  'https://to-do-ceja-cuevas-back.vercel.app' // producción en Vercel
 ];
 
 app.use(cors({
