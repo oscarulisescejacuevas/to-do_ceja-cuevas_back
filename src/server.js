@@ -1,38 +1,44 @@
 import 'dotenv/config';
-import app from './src/app.js';
+import express from 'express';
 import mongoose from 'mongoose';
+import morgan from 'morgan';
+import cors from 'cors';
 
-const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI;
+import taskRoutes from './routes/task.routes.js';
+import authRoutes from './routes/auth.routes.js';
 
-console.log("🚀 Iniciando servidor...");
-console.log(`🌐 Frontend permitido: https://to-do-ceja-cuevas-front.vercel.app`);
-console.log(`🌐 Localhost permitido: http://localhost:5173`);
+// Crear la aplicación express
+const app = express();
 
-// Conectar a MongoDB si existe URI
-if (MONGODB_URI) {
-    mongoose.connect(MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => {
-        console.log("✅ Conectado a MongoDB");
-        startServer();
-    })
-    .catch(err => {
-        console.error("❌ Error al conectar a MongoDB:", err.message);
-        console.log("⚠️  Iniciando sin MongoDB...");
-        startServer();
-    });
-} else {
-    console.log("⚠️  Sin MONGODB_URI, iniciando sin base de datos...");
-    startServer();
-}
+// ✅Configuración CORS
+const FRONTEND_URLS = [
+  'http://localhost:5173/', // desarrollo local
+  'https://to-do-ceja-cuevas-front.vercel.app' // producción en Vercel
+];
 
-function startServer() {
-    app.listen(PORT, () => {
-        console.log(`✅ Servidor escuchando en puerto: ${PORT}`);
-        console.log(`✅ CORS configurado para producción`);
-        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-    });
-}
+app.use(cors({
+  origin: FRONTEND_URLS,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+app.use(express.json());
+app.use(morgan('dev'));
+
+// Rutas
+app.get('/', (req, res) => res.json({ ok: true, name: 'todo-pwa-api' }));
+app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authRoutes);
+
+const { PORT = 4000, MONGO_URI } = process.env;
+
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    app.listen(PORT, () => console.log(`Conectado exitosamente al puerto: ${PORT}`));
+  })
+  .catch(err => {
+    console.error('Error al conectar a la base de datos', err);
+    process.exit(1);
+  });
+
+export default app;
