@@ -11,8 +11,8 @@ const app = express();
 connectToDB().catch(err => console.error("Error Mongo:", err));
 
 const allowedOrigins = [
-  "http://localhost:5173/",
-  "https://to-do-ceja-cuevas-front.vercel.app/"
+  "http://localhost:5173",
+  "https://to-do-ceja-cuevas-front.vercel.app"
 ];
 
 app.use(cors({
